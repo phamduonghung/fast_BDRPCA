@@ -1,7 +1,7 @@
 % Code for GoDec
 close all;
 clear all;
-clc;
+%clc;
 
 %% Add Path
 running_folder = 'C:\Users\dpham\ownCloud\Working\Atempo\';

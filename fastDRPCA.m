@@ -54,37 +54,7 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
     % initial solution
     x = zeros(m, n);
     W = zeros(m, n); % W
-    %Hx = real(ifft2(H.*fft2(x)));
-    mu = 1e0;
-    if 0
-        % Partial SVD
-        %[Ulan Slan Vlan] = lansvd(V, rang, 'L');
-        %[Ulan,Slan,Vlan] = svds(V, rang);
-        [Ulan,Slan,Vlan] = svdsecon(V, rang); % fastest
-
-        % Current low-rang approximation
-        L1 = Ulan*Slan*Vlan';
-
-        % Shrinkage
-        z = So(lambda/mu, x + (1/mu)*W);
-        x1 = real(ifft2(conj(H).*fft2(V-L1))) + z + (1/mu)*(- W);
-        h1 = 1./(abs(H).^2 + ones(m,n));
-        x = real(ifft2(h1.*fft2(x1)));
-        %Hx = real(ifft2(H.*fft2(x)));
-        Z2 = x - z;
-        Z2(unobserved) = 0; % skip missing values
-        W = W + mu*Z2;
-        %S1 = shrink(V-L1, lambda);
-        % figure
-        FigFeatures.title=0;
-        FigFeatures.result_folder = 'C:\Users\dpham\ownCloud\Working\Atempo\ISBI_2020\fast_BDRPCA-GitHub\Results';
-        FigFeatures.mm=0;
-        FigFeatures.bar=1;
-        FigFeatures.print=0;
-        FigFeatures.nomtest = 'Bimage_FPCP';
-        Mfinale=reshape(x,Nz,Nx,Nt);
-        Dopplerplot(Mfinale,espace_xx,espace_zz,1,FigFeatures);     
-    end
+    mu = 1e0;  
     % ------------------------
     % ---    Outer loops   ---
 sumLoop = 0;
@@ -149,7 +119,7 @@ for k = 1:loops
     TL = toc(timeLoop); 
     sumLoop = sumLoop + TL;
     if (err2(k) > tolS) 
-        fprintf(1, 'iter: %f\terr2: %f\trang(L1): %d\tcard(S): %d\t times: %.2fs\n', ...
+        fprintf(1, 'iter: %d\terr2: %f\trang(L1): %d\tcard(S): %d\t times: %.2fs\n', ...
                 k, err2(k), rank(L1), nnz(x(~unobserved)),sumLoop);
     else
         break; 
