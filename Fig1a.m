@@ -1,10 +1,9 @@
-close all;
-clear all;
-clc;
+%%% code matlab of Fig2a: SVD%%%%%                                              ;
+clear  all;
+close all 
+%% Set Current Folder of MATLAB being BD-RPCA-GitHub and Add Path
+addpath(genpath(fullfile(pwd)));
 
-%% Add Path
-running_folder = 'C:\Users\dpham\ownCloud\Working\Atempo\';
-addpath(genpath(fullfile(running_folder,'ISBI_2020\fast_BDRPCA-GitHub')));
 %% A modifier
 test = 3;
 metLS =2;

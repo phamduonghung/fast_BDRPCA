@@ -6,8 +6,8 @@ This MATLAB package is a collection of scripts allowing to generate figures in t
 
 
 ## Instructions: 
-1. Download the package in .zip file (click green Code above) and then unzip it. Note that its name should be **BD-RPCA-master**.  
-2. Set **Current Folder** of MATLAB to this unzipped folder, i.e. **BD-RPCA-master**.  
+1. Download the package in .zip file (click green Code above) and then unzip it. Note that the **name** of the unzipped folder should be **fast_BDRPCA**.  
+2. Set **Current Folder** of MATLAB to this unzipped folder, i.e. **fast_BDRPCA**.  
 3. Download all "simulation" data from the following link: 
 https://cloud.irit.fr/index.php/s/PVcA9S1OyiCRcZW and then put them into the folder **Data**
 4. Run each file **Fig?.m** corresponding to each figure (from Fig. 1 to Fig. 2a-2e) in [1]. 
