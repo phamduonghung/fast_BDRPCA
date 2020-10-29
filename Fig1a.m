@@ -13,11 +13,10 @@ result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 
 %% Loading data
-iHS=0; % Not run Oleg
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
 
-%%
+%% SVD
 fprintf(sprintf('performing SVD...\n'))
 tSVDStart = tic;           % pair 2: tic
 Mnew = M'*M                 ; %Matrice carr?e

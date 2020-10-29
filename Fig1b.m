@@ -10,14 +10,12 @@ nomfichier='simu_conv'
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Loading data
-iHS=0; % Not run Oleg
 load_data_US;
 
 %% For matrix-based algorithms
 [M,m,n,p] = convert_video3d_to_2d(M1);
 
 fprintf(sprintf('performing GoDec...\n'));
-
 %% Rank Guess rG
 fprintf(1,'Rang not specified. Trying to guess ...\n');
 rang0 = guessRank(M) ;
@@ -34,7 +32,6 @@ Mfinale=reshape(S,Nz,Nx,Nt);
 %save(sprintf('%s/GoDec.mat', result_folder),'Mfinale')   
 
 %% Doppler de puissance
-% Figures Parameters 
 FigFeatures.title=1;
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0;

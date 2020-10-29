@@ -1,5 +1,6 @@
 %%% code matlab of Fig1c: BD-RPCA%%%%%                                              ;
 close all 
+clear all
 %% Set Current Folder of MATLAB being BD-RPCA-GitHub and Add Path
 addpath(genpath(fullfile(pwd)));
 
@@ -33,7 +34,7 @@ fprintf('Initialization RPCA....\n')
 tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 %%
 fprintf('Running estimated initial PSF ....\n')
-max_iter = 2;
+max_iter = 3;
 Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
@@ -55,8 +56,7 @@ for iter = 1:max_iter
     % Stop Condition
     Z1 = x-xtmp;    
     err(1,iter) = norm(Z1, 'fro') / normM  
-    xtmp=x;   
-    
+    xtmp=x;       
     if (err(1,iter) > tol)    
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
