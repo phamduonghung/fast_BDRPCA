@@ -12,9 +12,9 @@ mkdir(result_folder)
 %% Loading data
 iHS=0; % Not run Oleg
 load_data_US;
-%%% For matrix-based algorithms
+
+%% For matrix-based algorithms
 [M,m,n,p] = convert_video3d_to_2d(M1);
-%M = M/abs(max(M(:)));
 
 fprintf(sprintf('performing GoDec...\n'));
 
@@ -24,7 +24,7 @@ rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
 %% SSGoDec 
-tau = 0.1;
+tau = 0.01;
 power = 1;
 tGoDecStart = tic;   
 [L,S,RMSE,error]=SSGoDec(M,rang0,tau,power);
@@ -39,7 +39,7 @@ FigFeatures.title=1;
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0;
 FigFeatures.bar=1;
-FigFeatures.print=1;
+FigFeatures.print=0;
 FigFeatures.nomtest = 'GoDec';
 Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
 clear Mfinale 

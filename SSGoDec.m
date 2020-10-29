@@ -20,6 +20,7 @@ function [L,S,RMSE,error]=SSGoDec(X,rang,tau,power)
 %Decomposition in Noisy Case", ICML 2011
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Tianyi Zhou, 2011, All rights reserved.
+% Updated by Duong Hung Pham, 2020
 
     %iteration parameters
     iter_max=1e+2;
@@ -57,7 +58,10 @@ function [L,S,RMSE,error]=SSGoDec(X,rang,tau,power)
         %Error, stopping criteria
         %T(idx(1:card))=0;
         T=T-S;
-        RMSE=[RMSE norm(T(:))];
+        RMSE=[RMSE norm(T(:))]; 
+        if iter>=2 
+              err2tmp = err2;
+        end
         err1 = norm(X - L - S, 'fro') / norm(X,'fro');
         err2 = norm(Stmp - S, 'fro') / norm(X,'fro');
         Stmp = S;
@@ -69,8 +73,10 @@ function [L,S,RMSE,error]=SSGoDec(X,rang,tau,power)
             L=L+T;
         end
         %fprintf('Iter %4d, RMSE %.2e \n', iter, RMSE(end))    
-        iter=iter+1;
-
+        iter=iter+1;        
+        if iter>2 && err2>err2tmp
+            break;            
+        end
     end
     %toc;
 
