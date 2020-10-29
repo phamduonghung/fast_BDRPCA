@@ -4,9 +4,8 @@ close all
 %% Set Current Folder of MATLAB being BD-RPCA-GitHub and Add Path
 addpath(genpath(fullfile(pwd)));
 
-%% A modifier
-test = 1; % For figure 2a of the paper, keep test=1 % For others (6a-6h), change test=2 or 3
-%%
+%% Some parameters
+test = 1; % For figure 2a of the paper, keep test=1 
 nomfichier='simu_conv' 
 seuil_tissu = 2;
 seuil_bruit = 15;

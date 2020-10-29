@@ -4,8 +4,8 @@ close all
 %% Set Current Folder of MATLAB being BD-RPCA-GitHub and Add Path
 addpath(genpath(fullfile(pwd)));
 
-%% A modifier
-test = 1; % For figure 2a of the paper, keep test=1 % For others (6a-6h), change test=2 or 3
+%% Some parameters
+test = 1; % For figure 2a of the paper, keep test=1 
 nomfichier='simu_conv' 
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
@@ -24,7 +24,7 @@ rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
 %% SSGoDec 
-tau = 5e3;
+tau = 0.1;
 power = 1;
 tGoDecStart = tic;   
 [L,S,RMSE,error]=SSGoDec(M,rang0,tau,power);
