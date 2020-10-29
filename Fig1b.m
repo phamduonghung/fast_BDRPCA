@@ -5,13 +5,8 @@ close all
 addpath(genpath(fullfile(pwd)));
 
 %% A modifier
-test = 3;
-metLS =2;
-
-nomfichier='peri' 
-seuil_tissu = 100;
-seuil_bruit = 150;
-
+test = 1; % For figure 2a of the paper, keep test=1 % For others (6a-6h), change test=2 or 3
+nomfichier='simu_conv' 
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Loading data
@@ -23,7 +18,7 @@ load_data_US;
 
 fprintf(sprintf('performing GoDec...\n'));
 
-%% Rank Guess
+%% Rank Guess rG
 fprintf(1,'Rang not specified. Trying to guess ...\n');
 rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
