@@ -1,11 +1,9 @@
 # fast BD-RPCA
  
-
 This MATLAB package is a collection of scripts allowing to generate figures in the paper [1], but for a **simuation** dataset. This paper introduces a computationally efficient technique for estimating high-resolution Doppler blood flow from an ultrafast ultrasound image sequence. More precisely, it consists in a new fast alternating minimization algorithm that implements a blind deconvolution method based on robust principal component analysis. Numerical investigation carried out on in vivo data shows the efficiency of the proposed approach in comparison with state-of-the-art methods
 
 
-
-## Instructions: 
+## Instructions
 1. Download the package in .zip file (click green Code above) and then unzip it. Note that the **name** of the unzipped folder should be **fast_BDRPCA**.  
 2. Set **Current Folder** of MATLAB to this unzipped folder, i.e. **fast_BDRPCA**.  
 3. Download all **simulation** data from the following link: 
