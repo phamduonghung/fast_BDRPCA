@@ -11,7 +11,7 @@ This MATLAB package is a collection of scripts allowing to generate figures in t
 3. Download all **simulation** data from the following link: 
 https://cloud.irit.fr/index.php/s/PVcA9S1OyiCRcZW and then put them into the folder **Data**
 4. Run each file **Fig?.m** corresponding to each figure (from Fig. 1 to Fig. 2a-2e) in [1]. 
-5. To print nice pdf figures, the **export_fig** package was used, which required a software support downloaded from the following link (there is also a portable version of this software): https://www.ghostscript.com/download/gpcldnld.html. In the codes, change **FigFeatures.print= 1** if you want to print the .pdf figure when using this package. 
+5. To print nice pdf figures, the **export_fig** package was used, which required a software support downloaded from the following link (there is also a portable version of this software): https://www.ghostscript.com/download/gpcldnld.html. In the codes, change **FigFeatures.print= 1** if you want to print the .pdf figure using this package. 
 
 
 [1] D.-H. Pham, A. Basarab, JP. Remenieras, P. Rodriguez and D. Kouame," Fast High Resolution Blood Flow Estimation and Clutter Rejection via an Alternating Optimization Problem," *Submitted to ISBI 2021*, Nice, France.

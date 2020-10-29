@@ -35,7 +35,11 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
 
     if isempty(lambdaFactor)
         lambdaFactor = 1.0;
-    end    
+    end   
+    
+    if isempty(tolS)
+        tolS = 1e-3;
+    end   
     
     % Set flag (increments the rang plus one at each iteration)
     inc_rang = 1;
@@ -60,6 +64,7 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
 sumLoop = 0;
 err2 = zeros(1,loops);
 for k = 1:loops
+    k
     timeLoop = tic;
     if(inc_rang == 1)
         lambda = lambda * lambdaFactor;         % modify Lambda at each iteration
