@@ -16,6 +16,6 @@ https://cloud.irit.fr/index.php/s/PVcA9S1OyiCRcZW and then put them into the fol
 
 [1] D.-H. Pham, A. Basarab, JP. Remenieras, P. Rodriguez and D. Kouame," Fast High Resolution Blood Flow Estimation and Clutter Rejection via an Alternating Optimization Problem," *Submitted to ISBI 2021*, Nice, France.
 
-COPYRIGHT
+## COPYRIGHT
 
 fast BD-RPCA is copyright reserved. If any issue related this package appears, please contact Duong Hung PHAM at duong-hung.pham@irit.fr.
