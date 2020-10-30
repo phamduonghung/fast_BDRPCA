@@ -22,11 +22,26 @@ tBDRPCAStart = tic;           % pair 2: tic
 %% Lambda1 Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
-%%
-tRPCAStart = tic;           % pair 2: tic
-fprintf('Initialization RPCA....\n')
-[T0, ~] = RobustPCA_Doppler(M,Lambda); %
-tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+
+%% Initialization SVD
+tSVDStart = tic;        
+fprintf('Initialization SVD....\n')
+Mnew = M'*M                 ; %Matrice carr?e
+[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+fprintf('Number of singular values: %d\n', length(diag(D)))
+
+f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
+If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+T0=M*V*If*V'                    ; %Calcul de la matrice finale    
+tSVDEnd = toc(tSVDStart)      % pair 2: toc
+
+% tRPCAStart = tic;           % pair 2: tic
+% fprintf('Initialization RPCA....\n')
+% [T0, ~] = RobustPCA_Doppler(M,Lambda); %
+% tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 %%
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 3;
