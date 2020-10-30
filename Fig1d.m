@@ -1,7 +1,6 @@
 %%% code matlab of Fig 1d: fast BD-RPCA%%%%%                                              ;
 close all 
 clear all
-close all
 %% Set Current Folder of MATLAB being BD-RPCA-GitHub and Add Path
 addpath(genpath(fullfile(pwd)));
 
@@ -48,7 +47,7 @@ err = zeros(1,max_iter);
 normM = norm(M, 'fro');
 
 loops=20;
-lambda=0.08;
+lambda=0.05;
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);

@@ -1,10 +1,10 @@
 %% Loading data US
-iHS=0; % Not run Oleg
+iHS=1; % Not run Oleg
 [~,name,~] = fileparts(nomfichier);
 load(fullfile(pwd,'Data',sprintf('%s.mat',nomfichier)))                                ; %chargement de la matrice
 if test ==1    
     [Nz,Nx,Nt] = size(M1)                           ; %Attribution de la taille de la matrice RF
-    if 1
+    if iHS
         for k = 1:Nt
             Moy = (mean(M1(:,:,k)))' * ones(1,Nz) ; 
             M1(:,:,k) = hilbert(M1(:,:,k)-Moy')              ; %application de la transform?e de Hilbert pour passer en donn?es complexes     

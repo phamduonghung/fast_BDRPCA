@@ -21,7 +21,7 @@ rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
 %% Fast DRPCA
-lambda=0.09;
+lambda=0.08;
 loops=20;
 %% BDRPCA running
 tfDRPCAStart = tic;           % pair 2: tic
