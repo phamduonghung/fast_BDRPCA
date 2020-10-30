@@ -30,51 +30,52 @@ rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
 %% fast BDRPCA
-%% SSGoDec 
-tau = 0.01;
-power = 1;
-tGoDecStart = tic;   
-[T0,~,~,~]=SSGoDec(M,rang0,tau,power);
-tGoDecEnd = toc(tGoDecStart)      % pair 2: toc
+tfBDRPCAStart = tic;           % pair 2: tic
 
-if 0
-    tfBDRPCAStart = tic;           % pair 2: tic
-    % Initialization SVD
-    tSVDStart = tic;        
-    fprintf('Initialization SVD....\n')
-    Mnew = M'*M                 ; %Matrice carr?e
-    [V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
-    D = sqrt(D2)                ; %Matrice des valeurs singuli?res
-    U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
-    fprintf('Number of singular values: %d\n', length(diag(D)))
+% fprintf('Initialization GoDec....\n')
+% tau = 0.01;
+% power = 1;
+% tGoDecStart = tic;   
+% [T0,~,~,~]=SSGoDec(M,rang0,tau,power);
+% tGoDecEnd = toc(tGoDecStart)      % pair 2: toc
 
-    f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-    f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
-    If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-    T0=M*V*If*V'                    ; %Calcul de la matrice finale    
-    tSVDEnd = toc(tSVDStart)      % pair 2: toc
-end
-%% Lambda1 Parameters
-%  if test==1
-%     Lambda = 3./sqrt(max(Nz*Nx,Nt));
-%     Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
-% elseif test==2
-%     Lambda = 1.3*1./sqrt(max(Nz*Nx,Nt));
-%     Lambda1 = 1*1./sqrt(max(Nz*Nx,Nt));                       
-% elseif test==3
-%     %Lambda = 0.9*1./sqrt(max(Nz*Nx,Nt));
-%     Lambda = 0.9*1./sqrt(max(Nz*Nx,Nt));
-%     Lambda1 = 1.15./sqrt(max(Nz*Nx,Nt));
-%     lambda = 4*1e3;% 1.15./sqrt(max(Nz*Nx,Nt));
-% else         
-%     Lambda = 1.2*1./sqrt(max(Nz*Nx,Nt));
-%     Lambda1 = 1.1*1./sqrt(max(Nz*Nx,Nt)); 
+% if 0
+%     % Initialization SVD
+%     tSVDStart = tic;        
+%     fprintf('Initialization SVD....\n')
+%     Mnew = M'*M                 ; %Matrice carr?e
+%     [V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+%     D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+%     U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+%     fprintf('Number of singular values: %d\n', length(diag(D)))
+% 
+%     f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+%     f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
+%     If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+%     T0=M*V*If*V'                    ; %Calcul de la matrice finale    
+%     tSVDEnd = toc(tSVDStart)      % pair 2: toc
 % end
+%% Lambda1 Parameters
+if test==1
+    Lambda = 3./sqrt(max(Nz*Nx,Nt));
+    Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
+elseif test==2
+    Lambda = 1.3*1./sqrt(max(Nz*Nx,Nt));
+    Lambda1 = 1*1./sqrt(max(Nz*Nx,Nt));                       
+elseif test==3
+    %Lambda = 0.9*1./sqrt(max(Nz*Nx,Nt));
+    Lambda = 0.9*1./sqrt(max(Nz*Nx,Nt));
+    Lambda1 = 1.15./sqrt(max(Nz*Nx,Nt));
+    lambda = 4*1e3;% 1.15./sqrt(max(Nz*Nx,Nt));
+else         
+    Lambda = 1.2*1./sqrt(max(Nz*Nx,Nt));
+    Lambda1 = 1.1*1./sqrt(max(Nz*Nx,Nt)); 
+end
 
-% tRPCAStart = tic;           % pair 2: tic
-% fprintf('Initialization RPCA....\n')
-% [T0, B0] = RobustPCA_Doppler(M,Lambda); %
-% tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+tRPCAStart = tic;           % pair 2: tic
+fprintf('Initialization RPCA....\n')
+[T0, B0] = RobustPCA_Doppler(M,Lambda); %
+tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 %T0 = T0/abs(max(T0(:)));
 
 % if 0

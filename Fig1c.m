@@ -48,9 +48,8 @@ Ttmp = T0;
 err = zeros(1,max_iter);
 normM = norm(M, 'fro');
 
-for iter = 1:max_iter
-    iter
-    fprintf('Running estimated DRPCA for iteration %d....\n',iter)
+for iter = 1:max_iter    
+    fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper        
                    
     % Stop Condition
