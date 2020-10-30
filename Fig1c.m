@@ -7,19 +7,23 @@ addpath(genpath(fullfile(pwd)));
 %% Some parameters
 test = 1; % For figure 2a of the paper, keep test=1 
 nomfichier='simu_conv' 
+seuil_tissu = 2;
+seuil_bruit = 15;
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
-%% Some figure parameters
+%% Figure parameters
 FigFeatures.title=1;
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0;
 FigFeatures.bar=1;
 FigFeatures.print=0;
+
+%% Performing BD-RPCA
 tBDRPCAStart = tic;           % pair 2: tic
-%% Lambda1 Parameters
+%% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 
@@ -32,16 +36,34 @@ D = sqrt(D2)                ; %Matrice des valeurs singuli?res
 U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
 fprintf('Number of singular values: %d\n', length(diag(D)))
 
+
+% f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+% f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
+% f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
+% If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+% Mf=M*V*If*V'                    ; %Calcul de la matrice finale    
+
 f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
 f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
 If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
 T0=M*V*If*V'                    ; %Calcul de la matrice finale    
 tSVDEnd = toc(tSVDStart)      % pair 2: toc
 
-% tRPCAStart = tic;           % pair 2: tic
-% fprintf('Initialization RPCA....\n')
-% [T0, ~] = RobustPCA_Doppler(M,Lambda); %
-% tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+Mfinale=reshape(T0,Nz,Nx,Nt);
+FigFeatures.nomtest = sprintf('SVD_T0%s',nomfichier); % Name 
+Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
+clear Mfinale 
+
+
+tRPCAStart = tic;           % pair 2: tic
+fprintf('Initialization RPCA....\n')
+[T0, ~] = RobustPCA_Doppler(M,Lambda); %
+tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+
+Mfinale=reshape(T0,Nz,Nx,Nt);
+FigFeatures.nomtest = sprintf('RPCA_T0%s',nomfichier); % Name 
+Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
+clear Mfinale 
 %%
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 3;
@@ -54,7 +76,6 @@ clear Mt M11
 %% Stop condition
 tol  = 1e-3;
 xtmp = M;
-Ttmp = T0;
 err = zeros(1,max_iter);
 normM = norm(M, 'fro');
 
