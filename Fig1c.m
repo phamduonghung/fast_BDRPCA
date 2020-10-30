@@ -49,21 +49,21 @@ If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les se
 T0=M*V*If*V'                    ; %Calcul de la matrice finale    
 tSVDEnd = toc(tSVDStart)      % pair 2: toc
 
-Mfinale=reshape(T0,Nz,Nx,Nt);
-FigFeatures.nomtest = sprintf('SVD_T0%s',nomfichier); % Name 
-Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
-clear Mfinale 
+% Mfinale=reshape(T0,Nz,Nx,Nt);
+% FigFeatures.nomtest = sprintf('SVD_T0%s',nomfichier); % Name 
+% Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
+% clear Mfinale 
+% 
 
-
-tRPCAStart = tic;           % pair 2: tic
-fprintf('Initialization RPCA....\n')
-[T0, ~] = RobustPCA_Doppler(M,Lambda); %
-tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
-
-Mfinale=reshape(T0,Nz,Nx,Nt);
-FigFeatures.nomtest = sprintf('RPCA_T0%s',nomfichier); % Name 
-Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
-clear Mfinale 
+% tRPCAStart = tic;           % pair 2: tic
+% fprintf('Initialization RPCA....\n')
+% [T0, ~] = RobustPCA_Doppler(M,Lambda); %
+% tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+% 
+% Mfinale=reshape(T0,Nz,Nx,Nt);
+% FigFeatures.nomtest = sprintf('RPCA_T0%s',nomfichier); % Name 
+% Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
+% clear Mfinale 
 %%
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 3;
