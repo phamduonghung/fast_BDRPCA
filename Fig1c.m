@@ -28,13 +28,13 @@ Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 
 %% Initialization SVD
-tSVDStart = tic;        
-fprintf('Initialization SVD....\n')
-Mnew = M'*M                 ; %Matrice carr?e
-[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
-D = sqrt(D2)                ; %Matrice des valeurs singuli?res
-U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
-fprintf('Number of singular values: %d\n', length(diag(D)))
+% tSVDStart = tic;        
+% fprintf('Initialization SVD....\n')
+% Mnew = M'*M                 ; %Matrice carr?e
+% [V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+% D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+% U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+% fprintf('Number of singular values: %d\n', length(diag(D)))
 
 
 % f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
@@ -43,11 +43,11 @@ fprintf('Number of singular values: %d\n', length(diag(D)))
 % If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
 % Mf=M*V*If*V'                    ; %Calcul de la matrice finale    
 
-f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
-If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-T0=M*V*If*V'                    ; %Calcul de la matrice finale    
-tSVDEnd = toc(tSVDStart)      % pair 2: toc
+% f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+% f(seuil_tissu+1:end)=[0]            ; %Application du seuil tissu sur le vecteur 
+% If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+% T0=M*V*If*V'                    ; %Calcul de la matrice finale    
+% tSVDEnd = toc(tSVDStart)      % pair 2: toc
 
 % Mfinale=reshape(T0,Nz,Nx,Nt);
 % FigFeatures.nomtest = sprintf('SVD_T0%s',nomfichier); % Name 
@@ -64,6 +64,19 @@ tSVDEnd = toc(tSVDStart)      % pair 2: toc
 % FigFeatures.nomtest = sprintf('RPCA_T0%s',nomfichier); % Name 
 % Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
 % clear Mfinale 
+
+%% SSGoDec 
+% Rank Guess rG
+fprintf(1,'Rang not specified. Trying to guess ...\n');
+rang0 = guessRank(M) ;
+fprintf(1,'Using Rank : %d\n',rang0);
+
+tau = 0.025;
+power = 1;
+tGoDecStart = tic;   
+[T0,~,~,~]=SSGoDec(M,rang0,tau,power);
+tGoDecEnd = toc(tGoDecStart)      % pair 2: toc
+
 %%
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 3;
