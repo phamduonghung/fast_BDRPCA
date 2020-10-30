@@ -22,7 +22,7 @@ rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
 %% SSGoDec 
-tau = 0.03;
+tau = 0.025;
 power = 1;
 tGoDecStart = tic;   
 [L,S,RMSE,error]=SSGoDec(M,rang0,tau,power);
