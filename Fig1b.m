@@ -5,7 +5,7 @@ close all
 addpath(genpath(fullfile(pwd)));
 
 %% Some parameters
-test = 1; % For figure 2a of the paper, keep test=1 
+test = 1; % For figure 1b of the paper, keep test=1 
 nomfichier='simu_conv' 
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)

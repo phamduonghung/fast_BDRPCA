@@ -5,7 +5,7 @@ close all
 addpath(genpath(fullfile(pwd)));
 
 %% Some parameters
-test = 1; % For figure 2a of the paper, keep test=1 
+test = 1; % For figure 1a of the paper, keep test=1 
 nomfichier='simu_conv' 
 seuil_tissu = 2;
 seuil_bruit = 15;
