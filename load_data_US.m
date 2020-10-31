@@ -1,18 +1,16 @@
 %% Loading data US
-iHS=1; % Not run Oleg
+iHS=1;
 [~,name,~] = fileparts(nomfichier);
 load(fullfile(pwd,'Data',sprintf('%s.mat',nomfichier)))                                ; %chargement de la matrice
 if test ==1    
     [Nz,Nx,Nt] = size(M1)                           ; %Attribution de la taille de la matrice RF
-    if iHS
+    if 1
         for k = 1:Nt
             Moy = (mean(M1(:,:,k)))' * ones(1,Nz) ; 
             M1(:,:,k) = hilbert(M1(:,:,k)-Moy')              ; %application de la transform?e de Hilbert pour passer en donn?es complexes     
         end
         psf_fichier=fullfile(pwd,'Data','psf_simu.mat');
-    end
-    %%% INITIALISATION DE LA MATRICE PSF    
-    if iHS==0
+    else
         psf_fichier=fullfile(pwd,'Data','psf_simu.mat');
     end
     load(psf_fichier);                                %chargement de la matrice                              
