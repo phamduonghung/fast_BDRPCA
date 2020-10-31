@@ -7,6 +7,8 @@ addpath(genpath(fullfile(pwd)));
 %% Some parameters
 test = 1; % For figure 1c of the paper, keep test=1 
 nomfichier='simu_conv' 
+seuil_tissu = 2;
+seuil_bruit = 15;
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Loading data
@@ -30,31 +32,33 @@ Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 %load(fullfile(pwd,'Data','T0.mat')) ; 
 %save(sprintf('%s/T0.mat', result_folder),'T0')  
 
-%% Rank Guess
-fprintf(1,'Rang not specified. Trying to guess ...\n');
-rang0 = guessRank(M) ;
-fprintf(1,'Using Rank : %d\n',rang0);
+%% SVD
+fprintf(sprintf('performing SVD...\n'))
+tSVDStart = tic;           % pair 2: tic
+Mnew = M'*M                 ; %Matrice carr?e
+[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+fprintf('Number of singular values: %d\n', length(diag(D)))
 
-%% SSGoDec 
-tau = 0.025;
-power = 1;
-tGoDecStart = tic;   
-[T0,X0,~,~]=SSGoDec(M,rang0,tau,power);
-tGoDecEnd = toc(tGoDecStart)      % pair 2: toc
+f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
+f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
+If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+X0=M*V*If*V'                    ; %Calcul de la matrice finale       
 
-%%
+%% BD-RPCA
 fprintf('Running estimated initial PSF ....\n')
-max_iter = 3;
-Mt = reshape(M-T0,Nz,Nx,Nt);
+max_iter = 5;
+Mt = reshape(X0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
 fprintf('Initialized PSF size: %d-%d\n',size(psf0,1),size(psf0,2))
 clear Mt M11 
 
-%% Stop condition
+% Stop condition
 tol  = 1e-3;
 xtmp = M;
-Ttmp = T0;
 err = zeros(1,max_iter);
 normM = norm(M, 'fro');
 

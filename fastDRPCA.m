@@ -136,7 +136,7 @@ for k = 1:loops
     %pause(0.1)
     %close
 end
-
+L1 = V-real(ifft2(H.*fft2(x)));
 % ---------------------------------
 % >>>  measure time performance <<<
 % ---------------------------------
