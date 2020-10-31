@@ -33,7 +33,8 @@ f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
 f(seuil_tissu+1:Nt)=[0]            ; %Application du seuil tissu sur le vecteur 
 If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
 T0=M*V*If*V'                    ; %Calcul de la matrice finale    
-%%
+
+%% Performing fast BD-RPCA
 tfBDRPCAStart = tic;  
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 20;
@@ -56,7 +57,7 @@ loops=20;
 lambda=0.05;
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
-    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);   
+    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);       
     
     % Stop Condition
     Z1 = x-xtmp;    
