@@ -75,7 +75,7 @@ for iter = 1:max_iter
     err(1,iter) = norm(Z1, 'fro') / normM; 
     xtmp=x;   
     
-    if (err(1,iter) > tol)    
+    if (err(1,iter) > tol) || err(1,iter+1)>err(1,iter)   
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
