@@ -36,7 +36,7 @@ T0=M*V*If*V'                    ; %Calcul de la matrice finale
 %%
 tfBDRPCAStart = tic;  
 fprintf('Running estimated initial PSF ....\n')
-max_iter = 5;
+max_iter = 20;
 Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
@@ -56,17 +56,13 @@ loops=20;
 lambda=0.05;
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
-    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);
-    %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
-    Mfinale=reshape(x,Nz,Nx,Nt);
-    FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
-    Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
+    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);   
     
     % Stop Condition
     Z1 = x-xtmp;    
-    err(1,iter) = log(norm(Z1, 'fro')) / normM  
+    err(1,iter) = log(norm(Z1, 'fro')) / normM; 
     xtmp=x;       
-    if (err(1,iter) > tol) && (err(1,iter+1)<err(1,iter))      
+    if (err(1,iter) > tol)       
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
@@ -74,7 +70,10 @@ for iter = 1:max_iter
         fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))   
     else 
         break;
-    end    
+    end  
+    if iter>=2 &&(err(1,iter)>err(1,iter-1))
+        break
+    end
     clear Mt M11 psf1
 end
 tBDRPCAEnd = toc(tfBDRPCAStart)      % pair 2: toc
