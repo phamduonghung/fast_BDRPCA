@@ -17,7 +17,7 @@ FigFeatures.title=1;
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0;
 FigFeatures.bar=1;
-FigFeatures.print=0;
+FigFeatures.print=1;
 tBDRPCAStart = tic;           % pair 2: tic
 %% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
@@ -27,8 +27,21 @@ Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 %fprintf('Initialization RPCA....\n')
 %[T0, ~] = RobustPCA_Doppler(M,Lambda); %
 %tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
-load(fullfile(pwd,'Data','T0.mat')) ; 
-%save(sprintf('%s/T0.mat', result_folder),'T0')   
+%load(fullfile(pwd,'Data','T0.mat')) ; 
+%save(sprintf('%s/T0.mat', result_folder),'T0')  
+
+%% Rank Guess
+fprintf(1,'Rang not specified. Trying to guess ...\n');
+rang0 = guessRank(M) ;
+fprintf(1,'Using Rank : %d\n',rang0);
+
+%% SSGoDec 
+tau = 0.025;
+power = 1;
+tGoDecStart = tic;   
+[T0,X0,~,~]=SSGoDec(M,rang0,tau,power);
+tGoDecEnd = toc(tGoDecStart)      % pair 2: toc
+
 %%
 fprintf('Running estimated initial PSF ....\n')
 max_iter = 3;
@@ -48,7 +61,11 @@ normM = norm(M, 'fro');
 for iter = 1:max_iter
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper        
-                   
+    %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
+    Mfinale=reshape(x,Nz,Nx,Nt);
+    FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
+    Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);                
+    
     % Stop Condition
     Z1 = x-xtmp;    
     err(1,iter) = norm(Z1, 'fro') / normM; 
