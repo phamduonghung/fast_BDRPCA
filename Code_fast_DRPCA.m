@@ -20,10 +20,10 @@ fprintf(1,'Rang not specified. Trying to guess ...\n');
 rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
 
-%% Fast DRPCA
+%% Peforming Fast DRPCA
 lambda=0.08;
 loops=20;
-%% BDRPCA running
+
 tfDRPCAStart = tic;           % pair 2: tic
 fprintf('Running fast DRPCA....\n')
 [L,S] =fastDRPCA(M, H, lambda, loops, rang0, [],[],[]);
