@@ -23,16 +23,9 @@ FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig
 tBDRPCAStart = tic;           % pair 2: tic
 %% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
-Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
-%% Initialization using PRCA or load directly T0 from Data folder
-%tRPCAStart = tic;           % pair 2: tic
-%fprintf('Initialization RPCA....\n')
-%[T0, ~] = RobustPCA_Doppler(M,Lambda); %
-%tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
-%load(fullfile(pwd,'Data','T0.mat')) ; 
-%save(sprintf('%s/T0.mat', result_folder),'T0')  
-
-%% SVD
+Lambda1 = 1.25*1./sqrt(max(Nz*Nx,Nt));
+%% Performing BD-RPCA
+% Initialization using SVD
 fprintf(sprintf('performing SVD...\n'))
 tSVDStart = tic;           % pair 2: tic
 Mnew = M'*M                 ; %Matrice carr?e
@@ -42,13 +35,14 @@ U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singul
 fprintf('Number of singular values: %d\n', length(diag(D)))
 
 f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-f(seuil_tissu+1:Nt)=[0]            ; %Application du seuil tissu sur le vecteur 
+f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
+f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
 If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-T0=M*V*If*V'                    ; %Calcul de la matrice finale   
+X0=M*V*If*V'                    ; %Calcul de la matrice finale   
 
-%% BD-RPCA
+% Estimated initial PSF
 fprintf('Running estimated initial PSF ....\n')
-Mt = reshape(M-T0,Nz,Nx,Nt);
+Mt = reshape(X0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
 fprintf('Initialized PSF size: %d-%d\n',size(psf0,1),size(psf0,2))
@@ -63,25 +57,27 @@ err = zeros(1,max_iter);
 
 for iter = 1:max_iter
     fprintf('Running BDRPCA for iteration %d....\n',iter)
-    [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper        
-    %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
-    Mfinale=reshape(x,Nz,Nx,Nt);
-    FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
-    Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);                
+    [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper 
+    xtmp1 = x;
+    % AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
+    %Mfinale=reshape(x,Nz,Nx,Nt);
+    %FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
+    %Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);                
     
     % Stop Condition
     Z1 = x-xtmp;    
-    err(1,iter) = norm(Z1, 'fro') / normM; 
+    err(1,iter) = log(norm(Z1, 'fro')) / normM; 
     xtmp=x;   
     
-    if (err(1,iter) >= tol)    
+    if (err(1,iter) > tol)    
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
         [H,psf1] = Hestimate(M11,Nz,Nx,Nt); 
         fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))      
     end  
-    if (err(1,iter) < tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
+    if (err(1,iter) <= tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
+        x = xtmp1;
         break
     end
     clear Mt M11 psf1

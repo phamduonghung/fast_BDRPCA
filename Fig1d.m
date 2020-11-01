@@ -16,7 +16,7 @@ FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0; 
 FigFeatures.bar=0; % Colorbar 0 or 1 
-FigFeatures.print=0; % Pdf Figure Print: 0 or 1 through export_fig 
+FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig 
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
@@ -61,6 +61,10 @@ err = zeros(1,max_iter);
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);       
+    % AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
+    %Mfinale=reshape(x,Nz,Nx,Nt);
+    %FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
+    %Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);       
     
     % Stop Condition
     Z1 = x-xtmp;    
