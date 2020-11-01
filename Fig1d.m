@@ -20,7 +20,9 @@ FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
-%% Initialization using SVD
+%% Performing fast BD-RPCA
+tfBDRPCAStart = tic;           % pair 2: tic
+% Initialization using SVD
 fprintf(sprintf('performing SVD...\n'))
 tSVDStart = tic;           % pair 2: tic
 Mnew = M'*M                 ; %Matrice carr?e
@@ -34,8 +36,7 @@ f(seuil_tissu+1:Nt)=[0]            ; %Application du seuil tissu sur le vecteur
 If=diag(f)                      ; %Matrice diagonale identit? filtree par les seuils
 T0=M*V*If*V'                    ; %Calcul de la matrice finale    
 
-%% Performing fast BD-RPCA
-tfBDRPCAStart = tic;  
+% Estimated initial PSF
 fprintf('Running estimated initial PSF ....\n')
 Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));

@@ -20,11 +20,12 @@ FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0; 
 FigFeatures.bar=1; % Colorbar 0 or 1 
 FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig 
-tBDRPCAStart = tic;           % pair 2: tic
 %% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1.25*1./sqrt(max(Nz*Nx,Nt));
+
 %% Performing BD-RPCA
+tBDRPCAStart = tic;           % pair 2: tic
 % Initialization using SVD
 fprintf(sprintf('performing SVD...\n'))
 tSVDStart = tic;           % pair 2: tic
@@ -39,6 +40,7 @@ f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur
 f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
 If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
 X0=M*V*If*V'                    ; %Calcul de la matrice finale   
+tSVDEnd = toc(tSVDStart)      % pair 2: toc
 
 % Estimated initial PSF
 fprintf('Running estimated initial PSF ....\n')
@@ -58,12 +60,7 @@ err = zeros(1,max_iter);
 for iter = 1:max_iter
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper 
-    xtmp1 = x;
-    % AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
-    %Mfinale=reshape(x,Nz,Nx,Nt);
-    %FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
-    %Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);                
-    
+    xtmp1 = x;               
     % Stop Condition
     Z1 = x-xtmp;    
     err(1,iter) = log(norm(Z1, 'fro')) / normM; 
