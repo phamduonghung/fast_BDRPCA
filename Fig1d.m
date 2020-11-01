@@ -55,7 +55,7 @@ xtmp = M;
 normM = norm(M, 'fro');
 
 loops=20;
-lambda=0.06;
+lambda=0.05;
 max_iter = 20;
 err = zeros(1,max_iter);
 
