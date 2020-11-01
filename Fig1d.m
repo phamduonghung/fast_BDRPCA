@@ -16,7 +16,7 @@ FigFeatures.title=1;
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0;
 FigFeatures.bar=1;
-FigFeatures.print=1;
+FigFeatures.print=0;
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
@@ -37,24 +37,27 @@ T0=M*V*If*V'                    ; %Calcul de la matrice finale
 %% Performing fast BD-RPCA
 tfBDRPCAStart = tic;  
 fprintf('Running estimated initial PSF ....\n')
-max_iter = 20;
 Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
 fprintf('Initialized PSF size: %d-%d\n',size(psf0,1),size(psf0,2))
 clear Mt M11 
 
-%% Stop condition
-tol  = 1e-3;
-xtmp = M;
-err = zeros(1,max_iter);
-normM = norm(M, 'fro');
-%% Rank Guess
+%% Rank Guess rG
 fprintf(1,'Rang not specified. Trying to guess ...\n');
 rang0 = guessRank(M) ;
 fprintf(1,'Using Rank : %d\n',rang0);
+
+%% Stop condition
+tol  = 1e-3;
+xtmp = M;
+normM = norm(M, 'fro');
+
 loops=20;
 lambda=0.05;
+max_iter = 20;
+err = zeros(1,max_iter);
+
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);       
@@ -69,15 +72,13 @@ for iter = 1:max_iter
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
         [H,psf1] = Hestimate(M11,Nz,Nx,Nt); 
         fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))   
-    else 
-        break;
     end  
-    if iter>=2 &&(err(1,iter)>err(1,iter-1))
+    if (err(1,iter) < tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
         break
     end
     clear Mt M11 psf1
 end
-tBDRPCAEnd = toc(tfBDRPCAStart)      % pair 2: toc
+tfBDRPCAEnd = toc(tfBDRPCAStart)      % pair 2: toc
 %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
 Mfinale=reshape(x,Nz,Nx,Nt);
 %save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')

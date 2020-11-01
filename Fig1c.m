@@ -49,7 +49,6 @@ X0=M*V*If*V'                    ; %Calcul de la matrice finale
 
 %% BD-RPCA
 fprintf('Running estimated initial PSF ....\n')
-max_iter = 5;
 Mt = reshape(X0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
@@ -59,8 +58,9 @@ clear Mt M11
 % Stop condition
 tol  = 1e-3;
 xtmp = M;
-err = zeros(1,max_iter);
 normM = norm(M, 'fro');
+max_iter = 20;
+err = zeros(1,max_iter);
 
 for iter = 1:max_iter
     fprintf('Running BDRPCA for iteration %d....\n',iter)
