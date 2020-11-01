@@ -29,9 +29,9 @@ D = sqrt(D2)                ; %Matrice des valeurs singuli?res
 U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
 fprintf('Number of singular values: %d\n', length(diag(D)))
 
-f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+f=ones(1,Nt)                    ; %creation d'un vecteur ones
 f(seuil_tissu+1:Nt)=[0]            ; %Application du seuil tissu sur le vecteur 
-If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+If=diag(f)                      ; %Matrice diagonale identit? filtree par les seuils
 T0=M*V*If*V'                    ; %Calcul de la matrice finale    
 
 %% Performing fast BD-RPCA
@@ -60,12 +60,8 @@ err = zeros(1,max_iter);
 
 for iter = 1:max_iter    
     fprintf('Running BDRPCA for iteration %d....\n',iter)
-    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);       
-    % AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
-    %Mfinale=reshape(x,Nz,Nx,Nt);
-    %FigFeatures.nomtest = sprintf('B_image-Iter_%d',iter);
-    %Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures);       
-    
+    [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);   
+        
     % Stop Condition
     Z1 = x-xtmp;    
     err(1,iter) = log(norm(Z1, 'fro')) / normM; 
