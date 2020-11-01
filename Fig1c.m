@@ -5,10 +5,8 @@ close all
 addpath(genpath(fullfile(pwd)));
 
 %% Some parameters
-test = 1; % For figure 1c of the paper, keep test=1 
+test = 1; % For figure 2a of the paper, keep test=1 
 nomfichier='simu_conv' 
-seuil_tissu = 2;
-seuil_bruit = 15;
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Loading data
@@ -19,51 +17,41 @@ FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0; 
 FigFeatures.bar=1; % Colorbar 0 or 1 
-FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig 
+FigFeatures.print=1; % Pdf Figure Print 0 or 1 through export_fig 
 %% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
-Lambda1 = 1.25*1./sqrt(max(Nz*Nx,Nt));
+Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 
-%% Performing BD-RPCA
+%% Peforming BD-RPCA
 tBDRPCAStart = tic;           % pair 2: tic
-% Initialization using SVD
-fprintf(sprintf('performing SVD...\n'))
-tSVDStart = tic;           % pair 2: tic
-Mnew = M'*M                 ; %Matrice carr?e
-[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
-D = sqrt(D2)                ; %Matrice des valeurs singuli?res
-U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
-fprintf('Number of singular values: %d\n', length(diag(D)))
-
-f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
-f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
-If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-X0=M*V*If*V'                    ; %Calcul de la matrice finale   
-tSVDEnd = toc(tSVDStart)      % pair 2: toc
+% Initialization RPCA
+tRPCAStart = tic;
+fprintf('Initialization RPCA....\n')
+[T0, ~] = RobustPCA_Doppler(M,Lambda); %
+tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 
 % Estimated initial PSF
 fprintf('Running estimated initial PSF ....\n')
-Mt = reshape(X0,Nz,Nx,Nt);
+Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
 fprintf('Initialized PSF size: %d-%d\n',size(psf0,1),size(psf0,2))
-clear Mt M11 
+clear Mt M11
 
 % Stop condition
 tol  = 1e-3;
 xtmp = M;
 normM = norm(M, 'fro');
-max_iter = 20;
+max_iter = 3;
 err = zeros(1,max_iter);
 
 for iter = 1:max_iter
     fprintf('Running BDRPCA for iteration %d....\n',iter)
     [T, x] = DRPCA(M,H,Lambda1); % S <-> B (blood) and  L <->T (tissue) and M <-> S  and H<-> D in paper 
-    xtmp1 = x;               
+  
     % Stop Condition
     Z1 = x-xtmp;    
-    err(1,iter) = log(norm(Z1, 'fro')) / normM; 
+    err(1,iter) = log(norm(Z1, 'fro')) / normM;
     xtmp=x;   
     
     if (err(1,iter) > tol)    
@@ -71,12 +59,11 @@ for iter = 1:max_iter
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
         [H,psf1] = Hestimate(M11,Nz,Nx,Nt); 
-        fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))      
+        fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))         
     end  
-    if (err(1,iter) <= tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
-        x = xtmp1;
+    if (err(1,iter) < tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
         break
-    end
+    end  
     clear Mt M11 psf1
 end
 tBDRPCAEnd = toc(tBDRPCAStart)      % pair 2: toc
@@ -88,3 +75,4 @@ Mfinale=reshape(x,Nz,Nx,Nt);
 FigFeatures.nomtest = sprintf('BDRPCA_%s',nomfichier); % Name 
 Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
 clear Mfinale 
+
