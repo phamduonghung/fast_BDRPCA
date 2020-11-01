@@ -15,41 +15,41 @@ mkdir(result_folder)
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
 %% Figure parameters
-FigFeatures.title=1;
+FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
-FigFeatures.mm=0;
-FigFeatures.bar=1;
-FigFeatures.print=1;
+FigFeatures.mm=0; 
+FigFeatures.bar=1; % Colorbar 0 or 1 
+FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig 
 tBDRPCAStart = tic;           % pair 2: tic
 %% Lambda Parameters
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 %% Initialization using PRCA or load directly T0 from Data folder
-%tRPCAStart = tic;           % pair 2: tic
-%fprintf('Initialization RPCA....\n')
-%[T0, ~] = RobustPCA_Doppler(M,Lambda); %
-%tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+tRPCAStart = tic;           % pair 2: tic
+fprintf('Initialization RPCA....\n')
+[T0, ~] = RobustPCA_Doppler(M,Lambda); %
+tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 %load(fullfile(pwd,'Data','T0.mat')) ; 
 %save(sprintf('%s/T0.mat', result_folder),'T0')  
 
 %% SVD
-fprintf(sprintf('performing SVD...\n'))
-tSVDStart = tic;           % pair 2: tic
-Mnew = M'*M                 ; %Matrice carr?e
-[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
-D = sqrt(D2)                ; %Matrice des valeurs singuli?res
-U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
-fprintf('Number of singular values: %d\n', length(diag(D)))
-
-f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
-f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
-If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-X0=M*V*If*V'                    ; %Calcul de la matrice finale       
+% fprintf(sprintf('performing SVD...\n'))
+% tSVDStart = tic;           % pair 2: tic
+% Mnew = M'*M                 ; %Matrice carr?e
+% [V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+% D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+% U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+% fprintf('Number of singular values: %d\n', length(diag(D)))
+% 
+% f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+% f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
+% f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
+% If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+% X0=M*V*If*V'                    ; %Calcul de la matrice finale       
 
 %% BD-RPCA
 fprintf('Running estimated initial PSF ....\n')
-Mt = reshape(X0,Nz,Nx,Nt);
+Mt = reshape(M-T0,Nz,Nx,Nt);
 M11 = squeeze(mean(Mt,3));
 [H,psf0] = Hestimate(M11,Nz,Nx,Nt);
 fprintf('Initialized PSF size: %d-%d\n',size(psf0,1),size(psf0,2))
@@ -75,15 +75,16 @@ for iter = 1:max_iter
     err(1,iter) = norm(Z1, 'fro') / normM; 
     xtmp=x;   
     
-    if (err(1,iter) > tol)    
+    if (err(1,iter) >= tol)    
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
         [H,psf1] = Hestimate(M11,Nz,Nx,Nt); 
-        fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))         
-    else 
-        break;
-    end    
+        fprintf('PSF size for iteration %d: %d-%d\n',iter+1,size(psf1,1),size(psf1,2))      
+    end  
+    if (err(1,iter) < tol) || (iter>=2 &&(err(1,iter)>err(1,iter-1)))
+        break
+    end
     clear Mt M11 psf1
 end
 tBDRPCAEnd = toc(tBDRPCAStart)      % pair 2: toc

@@ -12,11 +12,11 @@ seuil_bruit = 15;
 result_folder = fullfile(pwd,'Results');
 mkdir(result_folder)
 %% Figure parameters
-FigFeatures.title=1;
+FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
-FigFeatures.mm=0;
-FigFeatures.bar=1;
-FigFeatures.print=0;
+FigFeatures.mm=0; 
+FigFeatures.bar=1; % Colorbar 0 or 1 
+FigFeatures.print=0; % Pdf Figure Print: 0 or 1 through export_fig 
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
@@ -66,7 +66,7 @@ for iter = 1:max_iter
     Z1 = x-xtmp;    
     err(1,iter) = log(norm(Z1, 'fro')) / normM; 
     xtmp=x;       
-    if (err(1,iter) > tol)       
+    if (err(1,iter) >= tol)       
         Mt = reshape(M-T,Nz,Nx,Nt);
         M11 = squeeze(mean(Mt,3));
         fprintf('Running estimated PSF for iteration %d....\n',iter+1)
@@ -81,7 +81,7 @@ end
 tfBDRPCAEnd = toc(tfBDRPCAStart)      % pair 2: toc
 %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
 Mfinale=reshape(x,Nz,Nx,Nt);
-%save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')
+save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')
 
 %% Doppler de puissance
 FigFeatures.nomtest = sprintf('BDRPCA_%s',nomfichier); % Name 
