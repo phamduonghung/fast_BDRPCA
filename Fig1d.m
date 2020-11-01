@@ -16,7 +16,7 @@ FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0; 
 FigFeatures.bar=1; % Colorbar 0 or 1 
-FigFeatures.print=0; % Pdf Figure Print: 0 or 1 through export_fig 
+FigFeatures.print=1; % Pdf Figure Print: 0 or 1 through export_fig 
 %% Loading data
 load_data_US;
 [M,m,n,p] = convert_video3d_to_2d(M1);
@@ -55,7 +55,7 @@ xtmp = M;
 normM = norm(M, 'fro');
 
 loops=20;
-lambda=0.05;
+lambda=0.06;
 max_iter = 20;
 err = zeros(1,max_iter);
 
