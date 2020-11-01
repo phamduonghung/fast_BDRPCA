@@ -25,27 +25,26 @@ tBDRPCAStart = tic;           % pair 2: tic
 Lambda = 3./sqrt(max(Nz*Nx,Nt));
 Lambda1 = 1./sqrt(max(Nz*Nx,Nt));
 %% Initialization using PRCA or load directly T0 from Data folder
-tRPCAStart = tic;           % pair 2: tic
-fprintf('Initialization RPCA....\n')
-[T0, ~] = RobustPCA_Doppler(M,Lambda); %
-tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
+%tRPCAStart = tic;           % pair 2: tic
+%fprintf('Initialization RPCA....\n')
+%[T0, ~] = RobustPCA_Doppler(M,Lambda); %
+%tRPCAEnd = toc(tRPCAStart)      % pair 2: toc
 %load(fullfile(pwd,'Data','T0.mat')) ; 
 %save(sprintf('%s/T0.mat', result_folder),'T0')  
 
 %% SVD
-% fprintf(sprintf('performing SVD...\n'))
-% tSVDStart = tic;           % pair 2: tic
-% Mnew = M'*M                 ; %Matrice carr?e
-% [V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
-% D = sqrt(D2)                ; %Matrice des valeurs singuli?res
-% U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
-% fprintf('Number of singular values: %d\n', length(diag(D)))
-% 
-% f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
-% f(1:seuil_tissu)=[0]            ; %Application du seuil tissu sur le vecteur 
-% f(seuil_bruit:Nt)=[0]           ; %Application du seuil bruit sur le vecteur
-% If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
-% X0=M*V*If*V'                    ; %Calcul de la matrice finale       
+fprintf(sprintf('performing SVD...\n'))
+tSVDStart = tic;           % pair 2: tic
+Mnew = M'*M                 ; %Matrice carr?e
+[V,D2,Vt] = svd(Mnew)       ; %Application de la SVD
+D = sqrt(D2)                ; %Matrice des valeurs singuli?res
+U = M*V/D                   ; %Calcul de la matrice spatiale des vecteurs singuliers
+fprintf('Number of singular values: %d\n', length(diag(D)))
+
+f=ones(1,Nt)                    ; %cr?ation d'un vecteur ones
+f(seuil_tissu+1:Nt)=[0]            ; %Application du seuil tissu sur le vecteur 
+If=diag(f)                      ; %Matrice diagonale identit? filtr?e par les seuils
+T0=M*V*If*V'                    ; %Calcul de la matrice finale   
 
 %% BD-RPCA
 fprintf('Running estimated initial PSF ....\n')

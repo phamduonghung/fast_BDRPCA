@@ -15,7 +15,7 @@ mkdir(result_folder)
 FigFeatures.title=1; % Figure title 0 ou 1
 FigFeatures.result_folder = result_folder;
 FigFeatures.mm=0; 
-FigFeatures.bar=1; % Colorbar 0 or 1 
+FigFeatures.bar=0; % Colorbar 0 or 1 
 FigFeatures.print=0; % Pdf Figure Print: 0 or 1 through export_fig 
 %% Loading data
 load_data_US;
@@ -81,7 +81,7 @@ end
 tfBDRPCAEnd = toc(tfBDRPCAStart)      % pair 2: toc
 %% AFFICHAGE DE L'IMAGE DEROULANTE SELON Nt APRES SEUILLAGE/FILTRAGE
 Mfinale=reshape(x,Nz,Nx,Nt);
-save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')
+%save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')
 
 %% Doppler de puissance
 FigFeatures.nomtest = sprintf('BDRPCA_%s',nomfichier); % Name 
