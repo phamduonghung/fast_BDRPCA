@@ -60,7 +60,7 @@ max_iter = 20;
 err = zeros(1,max_iter);
 
 for iter = 1:max_iter    
-    fprintf('Running BDRPCA for iteration %d....\n',iter)
+    fprintf('Running fBDRPCA for iteration %d....\n',iter)
     [T,x] =fastDRPCA(M, H, lambda, loops, rang0, tol,[],[]);   
         
     % Stop Condition
@@ -85,6 +85,6 @@ Mfinale=reshape(x,Nz,Nx,Nt);
 %save(sprintf('%s/fBDRPCA_%s.mat', result_folder,nomfichier),'Mfinale')
 
 %% Doppler de puissance
-FigFeatures.nomtest = sprintf('BDRPCA_%s',nomfichier); % Name 
+FigFeatures.nomtest = sprintf('fBDRPCA_%s',nomfichier); % Name 
 Dopplerplot(Mfinale,espace_xx,espace_zz,test,FigFeatures); 
 clear Mfinale 
