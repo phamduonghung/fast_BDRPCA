@@ -1,11 +1,8 @@
 function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThreshold, lambdaFactor)
-    % fast RRPCA by PHAM Duong Hung
-    % duong-hung.pham@irit.fr
+    % fast RRPCA created by PHAM Duong Hung
+    % Email: duong-hung.pham@irit.fr
     % Version 02/11/2020 
-    %%
-    % Data size
-    %[Nrows,Ncols] = size(V);
-    % V = M;
+    %%    
     [m, n] = size(V);
     unobserved = isnan(V);
     V(unobserved) = 0;
@@ -94,7 +91,7 @@ for k = 1:loops
     
 
     %timeLoops = tic;
-    % Shrinkage
+    % LASSO L1
     z = So(lambda/mu, x + (1/mu)*W);
     x1 = real(ifft2(conj(H).*fft2(V-L1))) + z + (1/mu)*(- W);
     h1 = 1./(abs(H).^2 + ones(m,n));
