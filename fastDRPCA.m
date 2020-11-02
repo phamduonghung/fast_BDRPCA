@@ -115,23 +115,3 @@ for k = 1:loops
     end
 end
 L1 = V-real(ifft2(H.*fft2(x)));
-
-
-
-
-% ---------------------------------
-% >>>  measure time performance <<<
-% ---------------------------------
-%statsPCP.time = toc(t);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%function u = shrink(v, lambda)
-%  u = sign(v).*max(0, abs(v) - lambda);
-%end 
-
-% function r = So(tau, S)
-%     % shrinkage operator
-%     r = sign(S) .* max(abs(S) - tau, 0);
-% end
