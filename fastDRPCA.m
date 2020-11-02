@@ -43,23 +43,15 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
     % Set flag (increments the rang plus one at each iteration)
     inc_rang = 1;
 
-    % ---------------------------------
-    % >>>  measure time performance <<<
-    % ---------------------------------
-    %t = tic;
-    
-    % ------------------------    
-    % --- First outer loop ---
     rang = rang0;                     % current rang
     statsPCP.rang(1) = rang;          % save current rang
     
     % ------------------------    
-    % initial solution
+    % initial solutions
     x = zeros(m, n);
     W = zeros(m, n); % W
     mu = 1e0;  
-    % ------------------------
-    % ---    Outer loops   ---
+    
 sumLoop = 0;
 err2 = zeros(1,loops);
 for k = 1:loops
@@ -70,7 +62,7 @@ for k = 1:loops
         rang = rang + 0;                        % increase rang
     end
 
-    % low rang (partial SVD)
+    % low rank (partial SVD)
     %[Ulan Slan Vlan] = lansvd(V-S1, rang, 'L');
     %[Ulan,Slan,Vlan] = svds(V-S1, rang);
     [Ulan,Slan,Vlan] = svdsecon(V-x, rang); % fastest
@@ -89,12 +81,10 @@ for k = 1:loops
     % Current low-rang approximation
     L1 = Ulan*Slan*Vlan';    
 
-    %timeLoops = tic;
-    % LASSO L1
+    % LASSO L1 
     z = So(lambda/mu, x + (1/mu)*W);
     x1 = real(ifft2(conj(H).*fft2(V-L1))) + z + (1/mu)*(- W);
     h1 = 1./(abs(H).^2 + ones(m,n));
-    %TLs = toc(timeLoops)
    
     x = real(ifft2(h1.*fft2(x1)));
     Z2 = x - z;
