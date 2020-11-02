@@ -63,7 +63,7 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
 sumLoop = 0;
 err2 = zeros(1,loops);
 for k = 1:loops
-    %k
+    
     timeLoop = tic;
     if(inc_rang == 1)
         lambda = lambda * lambdaFactor;         % modify Lambda at each iteration
