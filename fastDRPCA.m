@@ -1,6 +1,8 @@
 function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThreshold, lambdaFactor)
-    %% Testing with new fRPCA
-    
+    % fast RRPCA by PHAM Duong Hung
+    % duong-hung.pham@irit.fr
+    % Version 02/11/2020 
+    %%
     % Data size
     %[Nrows,Ncols] = size(V);
     % V = M;
@@ -90,36 +92,18 @@ for k = 1:loops
     % Current low-rang approximation
     L1 = Ulan*Slan*Vlan';
     
-    if 0
-        % Shrinkage
-        %S1 = shrink(V-L1, lambda);
-        z = So(lambda/mu, x + (1/mu)*W);
-        x1 = real(ifft2(conj(H).*fft2(V-L1))) + mu*z - W;
-        h1 = 1./(abs(H).^2 + mu*ones(m,n));
-    else
-        %timeLoops = tic;
-        % Shrinkage
-        z = So(lambda/mu, x + (1/mu)*W);
-        x1 = real(ifft2(conj(H).*fft2(V-L1))) + z + (1/mu)*(- W);
-        h1 = 1./(abs(H).^2 + ones(m,n));
-        %TLs = toc(timeLoops)
-    end
+
+    %timeLoops = tic;
+    % Shrinkage
+    z = So(lambda/mu, x + (1/mu)*W);
+    x1 = real(ifft2(conj(H).*fft2(V-L1))) + z + (1/mu)*(- W);
+    h1 = 1./(abs(H).^2 + ones(m,n));
+    %TLs = toc(timeLoops)
+   
     x = real(ifft2(h1.*fft2(x1)));
-    %Hx = real(ifft2(H.*fft2(x)));
     Z2 = x - z;
     Z2(unobserved) = 0; % skip missing values
-    W = W + mu*Z2;
-    if 0
-        % figure
-        FigFeatures.title=0;
-        % FigFeatures.result_folder = result_folder;
-        FigFeatures.mm=0;
-        FigFeatures.bar=1;
-        FigFeatures.print=0;
-        FigFeatures.nomtest = 'Bimage_FPCP';
-        Mfinale=reshape(x,Nz,Nx,Nt);
-        Dopplerplot(Mfinale,espace_xx,espace_zz,1,FigFeatures);   
-    end
+    W = W + mu*Z2;    
     err2(k) = norm(Z2, 'fro') / normV;
     TL = toc(timeLoop); 
     sumLoop = sumLoop + TL;
@@ -132,11 +116,12 @@ for k = 1:loops
     if k>=2 && err2(k)>err2(k-1)
         break;
     end
-    
-    %pause(0.1)
-    %close
 end
 L1 = V-real(ifft2(H.*fft2(x)));
+
+
+
+
 % ---------------------------------
 % >>>  measure time performance <<<
 % ---------------------------------
