@@ -87,8 +87,7 @@ for k = 1:loops
     end
 
     % Current low-rang approximation
-    L1 = Ulan*Slan*Vlan';
-    
+    L1 = Ulan*Slan*Vlan';    
 
     %timeLoops = tic;
     % LASSO L1
