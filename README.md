@@ -17,4 +17,6 @@ https://cloud.irit.fr/index.php/s/846gUKURnYbehVl and then put them into the fol
 
 ## COPYRIGHT
 
+RobustPCA_Doppler.m comes from https://github.com/dlaptev/RobustPCA.
+
 fast BD-RPCA is copyright reserved. If any issue related this package appears, please contact Duong Hung PHAM at duong-hung.pham@irit.fr.
