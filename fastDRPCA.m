@@ -3,7 +3,7 @@ function [L1, x, statsPCP] = fastDRPCA(V, H, lambda, loops, rang0,tolS, rangThre
     % P. Rodriguez and B. Wohlberg, “Fast principal component pursuit via 
     % alternating minimization,” in 2013 IEEE Int. Conf. on Image Process., 2013, pp. 69–73.
     % Email: duong-hung.pham@irit.fr
-    % Version 02/11/2020 
+    % Version 1.0 02/11/2020 
     %%    
     [m, n] = size(V);
     unobserved = isnan(V);
