@@ -63,10 +63,6 @@ for k = 1:loops
         lambda = lambda * lambdaFactor;         % modify Lambda at each iteration
         rang = rang + 0;                        % increase rang
     end
-
-    % low rank (partial SVD)
-    %[Ulan Slan Vlan] = lansvd(V-S1, rang, 'L');
-    %[Ulan,Slan,Vlan] = svds(V-S1, rang);
     [Ulan,Slan,Vlan] = svdsecon(V-x, rang); % fastest
 
     currentEvals = diag(Slan);                                    % extract current evals
